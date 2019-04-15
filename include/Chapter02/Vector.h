@@ -61,32 +61,87 @@ public:
 	void unsort(Rank lo, Rank hi);
 	void unsort(){ unsort(0,_size); }
 	int32_t deduplicate();
-	int32_t uniquify();
+	int32_t uniquify();		// 有序向量的唯一化
 
 	void traverse(void(*)(T &));
 	template<typename VST> void traverse(VST &);
 
 };
 
+template<typename T> template<typename VST>
+void Vector<T>::traverse(VST &)
+{
+	for (int32_t index = 0; index < _size; ++index)
+		vst(_elem[index]);
+}
+
+template<typename T>
+int32_t Vector<T>::uniquify()
+{
+	int32_t pos = 1, oldSize = _size;
+	for (int32_t index = 1; index < _size; ++index)
+	{
+		if (_elem[index-1] == _elem[index])
+			continue;
+		_elem[pos++] = _elem[index];
+	}
+
+	_size = pos;
+	shrink();
+	return oldSize - _size;
+}
+
+template<typename T>
+int Vector<T>::disordered() const
+{
+	int32_t n = 0;
+	for (int32_t index = 1; index < _size; ++index)
+		if (_elem[index-1] > _elem[index])
+			n++;
+
+	return n;
+}
+
+template<typename T>
+void Vector<T>::traverse(void(*fun)(T &))
+{
+	for (int32_t index = 0; index < _size; ++index)
+		fun(_elem[index]);
+}
+
+template<typename T>
+int32_t Vector<T>::deduplicate()
+{
+	int32_t pos = 1;
+	for (int32_t index = 1; index < _size; ++index)
+	{
+		Rank r = find(_elem[index], 0, pos);
+		if (r < 0)	// 前缀未重复元素
+			_elem[pos++] = _elem[index];
+	}
+	
+	size_t oldSize = _size;
+	_size = pos;
+	shrink();
+	return oldSize - pos;
+}
+
 template<typename T>
 int32_t Vector<T>::remove(Rank lo, Rank hi)
 {
-	for (int32_t index = hi+1; index < _size; index++)
-		_elem[lo++] = _elem[index];
-	_size -= (hi-lo+1);
+	if (lo == hi) return 0;
+	while (hi < _size)
+		_elem[lo++] = _elem[hi++];
+	_size = lo;
 	shrink();
-	return _elem[lo];
+	return hi-lo;
 }
 
 template<typename T>
 T Vector<T>::remove(Rank r)
 {
 	T t = _elem[r];
-	for (int32_t i = r; i < _size-1; i++)
-		_elem[i] = _elem[i+1];
-
-	_size--;
-	shrink();
+	remove(r, r+1);
 	return t;
 }
 
@@ -173,7 +228,7 @@ void Vector<T>::expand()
 	for (int32_t i = 0; i < _size; i++)
 		_elem[i] = oldElem[i];
 	
-	delete[] _elem;
+	delete[] oldElem;
 }
 
 template<typename T>
