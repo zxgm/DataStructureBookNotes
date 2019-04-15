@@ -43,10 +43,12 @@ public:
 	Rank find(T const &e) const{ return find(e, 0, _size); }
 
 	Rank find(T const &e, Rank lo, Rank hi) const;
+	// Õë¶ÔÒÑÅÅÐòµÄÈÝÆ÷
 	Rank search(T const &e) const
 	{
 		return (0 >= _size) ? -1 : search(e, 0, _size);
 	}
+
 	Rank search(T const &e, Rank lo, Rank hi) const;
 
 	T& operator[](Rank r) const;
@@ -67,6 +69,24 @@ public:
 	template<typename VST> void traverse(VST &);
 
 };
+
+template<typename T>
+Rank Vector<T>::search(T const &e, Rank lo, Rank hi) const
+{
+	int32_t med = 0;
+	while (lo < hi)
+	{
+		med = (lo + hi) >> 1;
+		if (_elem[med] > e)
+			hi = med;
+		else if (_elem[med] < e)
+			lo = med+1;
+		else
+			return med;
+	}
+
+	return -1;
+}
 
 template<typename T> template<typename VST>
 void Vector<T>::traverse(VST &)

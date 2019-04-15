@@ -19,7 +19,8 @@ int main(int argc, char *argv[])
 	myVec.insert(11);
 
 	myVec.uniquify();
-	myVec.deduplicate();
+	Rank r = myVec.search(8);
+	//myVec.deduplicate();
 
 	getchar();
 	return 0;
