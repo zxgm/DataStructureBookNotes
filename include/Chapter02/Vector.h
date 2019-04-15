@@ -73,7 +73,8 @@ public:
 template<typename T>
 Rank Vector<T>::search(T const &e, Rank lo, Rank hi) const
 {
-	int32_t med = 0;
+	// 二分查找
+	/*int32_t med = 0;
 	while (lo < hi)
 	{
 		med = (lo + hi) >> 1;
@@ -85,7 +86,10 @@ Rank Vector<T>::search(T const &e, Rank lo, Rank hi) const
 			return med;
 	}
 
-	return -1;
+	return -1;*/
+
+	// 斐波那契查找
+	int32_t med = 0;
 }
 
 template<typename T> template<typename VST>
