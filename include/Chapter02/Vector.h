@@ -89,7 +89,20 @@ Rank Vector<T>::search(T const &e, Rank lo, Rank hi) const
 	return -1;*/
 
 	// ì³²¨ÄÇÆõ²éÕÒ
+	FibUtil fibUtil(hi-lo);
 	int32_t med = 0;
+	while (lo < hi)
+	{
+		med = lo+fibUtil.get();
+		if (_elem[med] > e)
+			hi = med;
+		else if (_elem[med] < e)
+			lo = med + 1;
+		else
+			return med;
+	}
+
+	return -1;
 }
 
 template<typename T> template<typename VST>
