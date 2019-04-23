@@ -18,7 +18,7 @@ protected:
 	void bubbleSort(Rank lo, Rank hi);
 	Rank max(Rank lo, Rank hi);
 	void selectionSort(Rank lo, Rank hi);
-	void merge(Rank lo, Rank hi);
+	void merge(Rank lo, Rank mid, Rank hi);
 	void mergeSort(Rank lo, Rank hi);
 	Rank partition(Rank lo, Rank hi);
 	void quickSort(Rank lo, Rank hi);
@@ -60,6 +60,7 @@ public:
 
 	void sort(Rank lo, Rank hi);
 	void sort(){ sort(0, _size); }
+
 	void unsort(Rank lo, Rank hi);
 	void unsort(){ unsort(0,_size); }
 	int32_t deduplicate();
@@ -69,6 +70,78 @@ public:
 	template<typename VST> void traverse(VST &);
 
 };
+
+template<typename T>
+void Vector<T>::merge(Rank lo, Rank mid, Rank hi)
+{
+	T *a = _elem + lo;
+	Rank l = mid - lo;
+	T *lp = new T[l];
+	for (Rank i = 0; i < l; lp[i] = a[i++]);
+
+	Rank r = hi - mid;
+	T *rp = _elem + mid;
+
+	// i:记录排序的下标 j:记录前向向量
+	for (Rank i = 0, j = 0, k = 0; (j < l || k < r);)
+	{
+		if (j<l && (k>=r && lp[j] > rp[k]))
+			a[i++] = lp[j++];
+		if (k<r && j >= l && rp[k] >= lp[j])
+			a[i++] = rp[k++];
+	}
+
+	delete[] lp;
+}
+
+template<typename T>
+void Vector<T>::mergeSort(Rank lo, Rank hi)
+{
+	if (hi-lo < 2) return;
+	int32_t mid = (hi+lo) >> 1;
+	mergeSort(lo, mid);
+	mergeSort(mid, hi);
+	merge(lo, mi, hi);
+}
+
+// 一趟扫描，排最大值
+template<typename T>
+bool Vector<T>::bubble(Rank lo, Rank hi)
+{
+	bool isSort = true;
+	while (++lo < hi)
+	{
+		if (_elem[lo - 1] > _elem[lo])
+		{
+			T tmp = _elem[lo - 1];
+			_elem[lo - 1] = _elem[lo];
+			_elem[lo] = tmp;
+
+			isSort = false;
+		}
+	}
+
+	return isSort;
+}
+
+template<typename T>
+void Vector<T>::bubbleSort(Rank lo, Rank hi)
+{
+	while (!bubble(lo,hi--));// 全部扫描
+}
+
+template<typename T>
+void Vector<T>::sort(Rank lo, Rank hi)
+{
+	switch (rand()%5)
+	{
+	case 1:bubbleSort(lo, hi);break;
+	case 2:selectionSort(lo, hi);break;
+	case 3:mergeSort(lo, hi);break;
+	case 4:heapSort(lo, hi); break;
+	default:quickSort(lo, hi);break;
+	}
+}
 
 template<typename T>
 Rank Vector<T>::search(T const &e, Rank lo, Rank hi) const

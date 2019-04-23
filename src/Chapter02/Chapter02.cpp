@@ -17,9 +17,9 @@ int main(int argc, char *argv[])
 
 	Vector<int> myVec;
 	for (int32_t i = 0; i < 10; i++)
-		myVec.insert(i+5);
+		myVec.insert(3);
 
-	myVec.uniquify();
+	//myVec.uniquify();
 	myVec.traverse(Traverse);
 	Rank r = myVec.search(9);
 	//myVec.deduplicate();
