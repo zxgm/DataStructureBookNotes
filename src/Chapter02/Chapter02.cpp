@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include "Chapter02\Vector.h"
 #include "Chapter02\FibUtil.h"
+#include <time.h>
+#include <stdlib.h>
 
 void Traverse(int64_t i)
 {
@@ -9,26 +11,17 @@ void Traverse(int64_t i)
 
 int main(int argc, char *argv[])
 {
-	FibUtil fib(22);
-	fib.traverse(Traverse);
+	srand(time(NULL));
+	//FibUtil fib(22);
+	//fib.traverse(Traverse);
 
-	/*Vector<int> myVec;
-	myVec.insert(2);
-	myVec.insert(2);
-	myVec.insert(2);
-	myVec.insert(2);
-	myVec.insert(4);
-	myVec.insert(4);
-	myVec.insert(5);
-	myVec.insert(7);
-	myVec.insert(7);
-	myVec.insert(9);
-	myVec.insert(10);
-	myVec.insert(11);
-	myVec.insert(11);
+	Vector<int> myVec;
+	for (int32_t i = 0; i < 10; i++)
+		myVec.insert(i+5);
 
 	myVec.uniquify();
-	Rank r = myVec.search(8);*/
+	myVec.traverse(Traverse);
+	Rank r = myVec.search(9);
 	//myVec.deduplicate();
 
 	getchar();

@@ -16,7 +16,7 @@ FibUtil::~FibUtil()
 	}
 }
 
-// 0 1 1 2 3 5 8 13 21 ...
+// 0 1 1 2 3 5 8 13 21 34 55 89 144...
 // 2,3,4,5,3,4,3 // 7По
 void FibUtil::initialize()
 {
@@ -41,13 +41,10 @@ void FibUtil::initialize()
 	}
 }
 
-int64_t FibUtil::get(uint32_t itemIndex)
+int64_t FibUtil::getlt(uint32_t value)
 {
-	assert(0 <= itemIndex < m_numOfReal);
-	return m_pItems[itemIndex];
-}
+	int32_t i = m_numOfReal;
+	while (i-- && m_pItems[i] >= value);
 
-int64_t FibUtil::get()
-{
-	return m_pItems[m_numOfReal-1];
+	return i==-1 ? i:m_pItems[i];
 }

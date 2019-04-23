@@ -73,7 +73,7 @@ public:
 template<typename T>
 Rank Vector<T>::search(T const &e, Rank lo, Rank hi) const
 {
-	// 二分查找
+	// 三分支版本的二分查找
 	/*int32_t med = 0;
 	while (lo < hi)
 	{
@@ -88,25 +88,48 @@ Rank Vector<T>::search(T const &e, Rank lo, Rank hi) const
 
 	return -1;*/
 
-	// 斐波那契查找
-	FibUtil fibUtil(hi-lo);
+	// 二分支版本的二分查找
+	/*int32_t med = 0;
+	while (1 < hi-lo)
+	{
+	med = (hi+lo)>>1;
+	_elem[med] > e ? hi=med:lo=med;
+	}
+
+	return _elem[lo] != e ? -1 : lo;*/
+
+	// 
+	while (lo < hi)
+	{
+		Rank med = (hi+lo) >> 1;
+		_elem[med] > e ? hi = med:lo = med + 1;
+	}
+
+	return --lo;
+
+	// 三分支版本的斐波那契查找
+	/*FibUtil fibUtil(hi-lo);
 	int32_t med = 0;
 	while (lo < hi)
 	{
-		med = lo+fibUtil.get();
-		if (_elem[med] > e)
-			hi = med;
-		else if (_elem[med] < e)
-			lo = med + 1;
-		else
-			return med;
+	int64_t tmp = fibUtil.getlt(hi - lo);
+	if (tmp == -1)
+	break;
+
+	med = lo + tmp;
+	if (_elem[med] > e)
+	hi = med;
+	else if (_elem[med] < e)
+	lo = med + 1;
+	else
+	return med;
 	}
 
-	return -1;
+	return -1;*/
 }
 
 template<typename T> template<typename VST>
-void Vector<T>::traverse(VST &)
+void Vector<T>::traverse(VST &vst)
 {
 	for (int32_t index = 0; index < _size; ++index)
 		vst(_elem[index]);

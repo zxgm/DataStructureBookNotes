@@ -11,9 +11,8 @@ public:
 	FibUtil(uint32_t numOfItems);
 	~FibUtil();
 
-	// 获取斐波那契数列中第itemIndex项
-	int64_t get(uint32_t itemIndex);
-	int64_t get();
+	// 获得小于value的值的最大斐波那契数列值
+	int64_t getlt(uint32_t value);
 
 	template<typename VST>
 	void traverse(VST &t);
@@ -24,7 +23,6 @@ private:
 	// 存储小于项数的斐波那契数值
 	int64_t *m_pItems;
 	uint32_t m_numOfReal;// 实际存储的项数量
-
 	void initialize();
 };
 
