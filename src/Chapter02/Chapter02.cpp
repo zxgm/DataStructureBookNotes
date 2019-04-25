@@ -17,11 +17,14 @@ int main(int argc, char *argv[])
 
 	Vector<int> myVec;
 	for (int32_t i = 0; i < 10; i++)
-		myVec.insert(3);
+		myVec.insert(rand()%200);
 
 	//myVec.uniquify();
 	myVec.traverse(Traverse);
-	Rank r = myVec.search(9);
+	//Rank r = myVec.search(9);
+	myVec.sort();
+	printf("ÅÅÐòºó:");
+	myVec.traverse(Traverse);
 	//myVec.deduplicate();
 
 	getchar();

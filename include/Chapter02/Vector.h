@@ -83,11 +83,12 @@ void Vector<T>::merge(Rank lo, Rank mid, Rank hi)
 	T *rp = _elem + mid;
 
 	// i:记录排序的下标 j:记录前向向量
+	// 选中两者中最小的数值追加；如果某向量结束，剩余向量全部追加
 	for (Rank i = 0, j = 0, k = 0; (j < l || k < r);)
 	{
-		if (j<l && (k>=r && lp[j] > rp[k]))
+		if (j<l && (k>=r || lp[j] <= rp[k]))
 			a[i++] = lp[j++];
-		if (k<r && j >= l && rp[k] >= lp[j])
+		if (k<r && (j >= l || rp[k] < lp[j]))
 			a[i++] = rp[k++];
 	}
 
@@ -101,7 +102,7 @@ void Vector<T>::mergeSort(Rank lo, Rank hi)
 	int32_t mid = (hi+lo) >> 1;
 	mergeSort(lo, mid);
 	mergeSort(mid, hi);
-	merge(lo, mi, hi);
+	merge(lo, mid, hi);
 }
 
 // 一趟扫描，排最大值
