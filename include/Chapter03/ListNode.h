@@ -1,3 +1,5 @@
+#include <stdio.h>
+#include <assert.h>
 
 typedef int Rank;
 #define ListNodePos(T) ListNode<T>*
@@ -14,8 +16,8 @@ struct ListNode
 		:data(e), pred(p), succ(s){}
 
 	T data(){ return data; }
-	insertAsPred(const T &e);
-	insertAsSucc(const T &e);
+	ListNodePos(T) insertAsPred(const T &e);
+	ListNodePos(T) insertAsSucc(const T &e);
 };
 
 template<typename T>
@@ -25,6 +27,7 @@ ListNode<T>::insertAsPred(const T &e)
 	ListNode *node = new ListNode(e, preNode, this);
 	preNode->succ = node;
 	this->pred = node;
+	return node;
 }
 
 template<typename T>
@@ -35,4 +38,5 @@ ListNode<T>::insertAsSucc(const T &e)
 
 	this->succ = node;
 	succNode->pred = node;
+	return node;
 }

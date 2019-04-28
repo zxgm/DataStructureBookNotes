@@ -38,6 +38,7 @@ public:
 	{
 		return find(e, _size, trailer);
 	}
+
 	ListNodePos(T) find(const T &e, int n, ListNodePos(T) p) const;
 	ListNodePos(T) search(const T &e) const
 	{
@@ -49,6 +50,7 @@ public:
 
 	ListNodePos(T) insertAsFirst(const T &e);
 	ListNodePos(T) insertAsLast(const T &e);
+	// p节点之后插入数据e
 	ListNodePos(T) insertA(ListNodePos(T) p, const T &e);
 	ListNodePos(T) insertB(ListNodePos(T) p, const T &e);
 	T remove(ListNodePos(T) p);
@@ -65,13 +67,76 @@ public:
 };
 
 template<typename T>
-void List<T>::copyNodes(ListNodePos(T) p, int n)
+T List<T>::remove(ListNodePos(T) p)
+{
+	ListNodePos(T) predNode = p->pred;
+	ListNodePos(T) succNode = p->succ;
+	predNode->succ = succNode;
+	succNode->pred = predNode;
+
+	delete p;
+	p = NULL;
+}
+
+template<typename T>
+ListNodePos(T) List<T>::insertA(ListNodePos(T) p, const T &e)
+{
+	_size++;
+	return p->insertAsSucc(e);
+}
+
+template<typename T>
+ListNodePos(T) List<T>::insertB(ListNodePos(T) p, const T &e)
+{
+	_size++;
+	return p->insertAsPred(e);
+}
+
+template<typename T>
+ListNodePos(T) List::insertAsLast(const T &e)
+{
+	_size++;
+	return trailer->insertAsPred(e);
+}
+
+template<typename T>
+ListNodePos(T) List<T>::insertAsFirst(const T &e)
+{
+	_size++;
+	return header->insertAsSucc(e);
+}
+
+template<typename T>
+ListNodePos(T)
+List<T>::find(const T &e, int n, ListNodePos(T) p) const
 {
 	while (n--)
+		if (e == (p = p->pred)->data)
+			return p;
+
+	return NULL;
+}
+
+template<typename T>
+T& List<T>::operator[](Rank r) const
+{
+	assert(0 <= r < _size);
+
+	ListNodePos(T) pNode = first();
+	while (r-- && pNode)
+		pNode = pNode->succ;
+
+	return pNode->data;
+}
+
+template<typename T>
+void List<T>::copyNodes(ListNodePos(T) p, int n)
+{
+	while (n-- && p)
 	{
 		T &e = p->data;
-		ListNodePos(T) tmpNode = new ListNode(e);
-
+		trailer->insertAsPred(e);
+		p = p->succ;
 	}
 }
 
@@ -94,8 +159,8 @@ template<typename T>
 void List<T>::init()
 {
 	_size = 0;
-	header = new ListNode();
-	trailer = new ListNode();
+	header = new ListNode<T>();
+	trailer = new ListNode<T>();
 	header->succ = trailer;
 	header->pred = NULL;
 	trailer->pred = header;
