@@ -19,6 +19,7 @@ protected:
 
 public:
 	List(){ init(); }
+
 	List(List<T> const & l);
 	List(List<T> const &l, Rank r, int n);
 	List(ListNodePos(T) p, int n);
@@ -67,6 +68,65 @@ public:
 };
 
 template<typename T>
+int List<T>::deduplicate()
+{
+	assert(_size > 1);
+
+	ListNodePos(T) predIndex = first();
+	int predSize = 1, oldSize = _size;
+	ListNodePos(T) currentIndex = predIndex->succ;
+	while (--_size)
+	{
+		ListNodePos(T) pNode = \
+			find(currentIndex->data, predSize, currentIndex);
+		if (pNode)
+			currentIndex = currentIndex->succ;
+		else
+		{
+			predIndex->succ = currentIndex;
+			currentIndex->pred = predIndex;
+
+			predIndex = currentIndex;
+			currentIndex = predIndex->succ;
+			predSize++;
+		}
+	}
+
+	return oldSize - predSize;
+}
+
+template<typename T>
+List<T>::~List()
+{
+	clear();
+	delete header;
+	header = NULL;
+	delete trailer;
+	trailer = NULL;
+}
+
+template<typename T>
+List<T>::List(List<T> const &l, Rank r, int n)
+{
+	ListNodePos(T) pNode = l.first();
+	while (r-- && pNode)
+		pNode = pNode->succ;
+	copyNodes(pNode, n);
+}
+
+template<typename T>
+List<T>::List(List<T> const & l)
+{
+	copyNodes(l.first(), l.size());
+}
+
+template<typename T>
+List<T>::List(ListNodePos(T) p, int n)
+{
+	copyNodes(p, n);
+}
+
+template<typename T>
 T List<T>::remove(ListNodePos(T) p)
 {
 	ListNodePos(T) predNode = p->pred;
@@ -74,8 +134,11 @@ T List<T>::remove(ListNodePos(T) p)
 	predNode->succ = succNode;
 	succNode->pred = predNode;
 
+	T e = p->data;
 	delete p;
 	p = NULL;
+	--_size;
+	return e;
 }
 
 template<typename T>
@@ -132,10 +195,10 @@ T& List<T>::operator[](Rank r) const
 template<typename T>
 void List<T>::copyNodes(ListNodePos(T) p, int n)
 {
+	init();
 	while (n-- && p)
 	{
-		T &e = p->data;
-		trailer->insertAsPred(e);
+		insertAsLast(p->data);
 		p = p->succ;
 	}
 }
@@ -143,8 +206,8 @@ void List<T>::copyNodes(ListNodePos(T) p, int n)
 template<typename T>
 int List<T>::clear()
 {
-	ListNodePos(T) listNode = header;
-	while (listNode)
+	ListNodePos(T) listNode = first();
+	while (listNode != trailer)
 	{
 		ListNodePos(T) tmpNode = listNode->succ;
 		delete listNode;
@@ -152,7 +215,9 @@ int List<T>::clear()
 		listNode = tmpNode;
 	}
 
-	init();
+	int oldSize = _size;
+	_size = 0;
+	return oldSize;
 }
 
 template<typename T>
