@@ -74,20 +74,17 @@ int List<T>::deduplicate()
 
 	ListNodePos(T) predIndex = first();
 	int predSize = 1, oldSize = _size;
-	ListNodePos(T) currentIndex = predIndex->succ;
+	ListNodePos(T) currentIndex = NULL;
 	while (--_size)
 	{
+		currentIndex = predIndex->succ;
 		ListNodePos(T) pNode = \
 			find(currentIndex->data, predSize, currentIndex);
 		if (pNode)
-			currentIndex = currentIndex->succ;
+			remove(pNode);
 		else
 		{
-			predIndex->succ = currentIndex;
-			currentIndex->pred = predIndex;
-
 			predIndex = currentIndex;
-			currentIndex = predIndex->succ;
 			predSize++;
 		}
 	}
