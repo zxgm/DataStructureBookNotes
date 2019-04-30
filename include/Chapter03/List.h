@@ -45,6 +45,7 @@ public:
 	{
 		return search(e, _size, trailer);
 	}
+
 	ListNodePos(T) search(const T &e, int n, ListNodePos(T) p) const;
 	ListNodePos(T) selectMax(ListNodePos(T) p, int n);
 	ListNodePos(T) selectMax(){ return selectMax(header->succ, _size); }
@@ -65,7 +66,101 @@ public:
 	void traverse(void(*)(T &));
 	template<typename VST>
 	void traverse(VST &vst);
+
+private:
+	// 交换指针指向的值
+	void swap(ListNodePos(T) a, ListNodePos(T) b);
 };
+
+template<typename T>
+void List<T>::sort(ListNodePos(T) p, int n)
+{
+	switch (rand() % 3)
+	{
+	case 1:insertionSort(p, n); break;
+	case 2:selectionSort(p, n); break;
+	default:mergeSort(p, n); break;
+	}
+}
+
+template<typename T>
+void List<T>::insertionSort(ListNodePos(T) p, int n)
+{
+	int sortedSize = 0;
+	while (n--)
+	{
+		ListNodePos(T) searchNode = search(p->data, sortedSize, p);
+		this->insertA(searchNode, p->data);
+
+		p = p->succ;
+		remove(p->pred);
+
+		sortedSize++;
+	}
+}
+
+template<typename T>
+List<T>::search(const T &e, int n, ListNodePos(T) p) const
+{
+	while (n--)
+		if ((p = p->pred)->data <= e)
+			break;
+
+	return p;
+}
+
+template<typename T>
+void List<T>::swap(ListNodePos(T) a, ListNodePos(T) b)
+{
+	T tmp = a->data;
+	a->data = b->data;
+	b->data = tmp;
+}
+
+template<typename T>
+void List<T>::reverse()
+{
+	ListNodePos(T) backNode = header;
+	ListNodePos(T) forwardNode = trailer;
+
+	while ((backNode = backNode->succ) != (forwardNode = forwardNode->pred))
+		swap(backNode, forwardNode);
+}
+
+// 有序列表的唯一化
+template<typename T>
+int List<T>::uniquify()
+{
+	if (_size < 2) return 0;
+
+	int oldSize = size();
+	ListNodePos(T) preNode = first();
+	ListNodePos(T) pNode = NULL;
+	while ((pNode = preNode->succ) != trailer)
+		pNode->data == preNode->data ? remove(pNode) : preNode = pNode;
+
+	return oldSize - _size;
+}
+
+template<typename T>
+void List<T>::traverse(void(*visit)(T &))
+{
+	for (ListNodePos(T) node = header->succ;
+		node != trailer; node = node->succ;)
+	{
+		visit(node->data);
+	}
+}
+
+template<typename T> template<typename VST>
+void List<T>::traverse(VST &vst)
+{
+	for (ListNodePos(T) node = header->succ;
+		node != trailer; node = node->succ)
+	{
+		vst(node->data);
+	}
+}
 
 template<typename T>
 int List<T>::deduplicate()
