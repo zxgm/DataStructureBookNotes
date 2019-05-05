@@ -84,6 +84,69 @@ void List<T>::sort(ListNodePos(T) p, int n)
 }
 
 template<typename T>
+void List<T>::mergeSort(ListNodePos(T) &p, int n)
+{
+	int mid = n >> 1;
+	ListNodePos(T) midNode = NULL;
+	for (int i = 0; i < mid;i++)
+		midNode = p->succ;
+	
+	mergeSort(p, mid);
+	mergeSort(midNode, n-mid);
+	merge(p,mid,*this,midNode,n-mid);
+}
+
+template<typename T>
+void List<T>::merge(ListNodePos(T)& p, int n, List<T> &l, ListNodePos(T) q, int m)
+{
+	//ListNodePos(T) header = p->pred;
+	while (n)
+	{
+		if (m && p->data < q->data)
+		{
+			p = p->succ;
+			//if (!p)
+				//break;
+		}
+		else
+		{
+			insertA(p, l.remove(q));
+			m--;
+		}
+	}
+}
+
+template<typename T>
+void List<T>::selectionSort(ListNodePos(T) p, int n)
+{
+	ListNodePos(T) header = p->pred;
+	ListNodePos(T) trailer = p;
+	for (int i = 0; i < n; i++) trailer = header->succ;
+	while (1 < n)
+	{
+		ListNodePos(T) node = selectMax(p, n);
+		insertB(trailer, remove(node));
+		trailer = trailer->pred; 
+		n--;
+	}
+}
+
+template<typename T>
+ListNodePos(T) List<T>::selectMax(ListNodePos(T) p, int n)
+{
+	ListNodePos(T) maxNode = p;
+	for (int i = 1; i < n;i++)
+	{
+		p = p->succ;
+		//if (p->data > maxNode)	// 避免T类型未定义 >
+		if(!lt(p->data, maxNode->data))
+			maxNode = p;
+	}
+	
+	return maxNode;
+}
+
+template<typename T>
 void List<T>::insertionSort(ListNodePos(T) p, int n)
 {
 	int sortedSize = 0;
