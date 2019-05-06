@@ -99,21 +99,25 @@ void List<T>::mergeSort(ListNodePos(T) &p, int n)
 template<typename T>
 void List<T>::merge(ListNodePos(T)& p, int n, List<T> &l, ListNodePos(T) q, int m)
 {
-	//ListNodePos(T) header = p->pred;
-	while (n)
+	ListNodePos(T) predP = p->pred;
+	while (m > 0)
 	{
-		if (m && p->data < q->data)
+		if (n > 0 && lt(p->data, q->data))
 		{
-			p = p->succ;
-			//if (!p)
-				//break;
+			p = p->succ;     
+			if (q == p)	// 避免两个链表分区重叠
+				break;
+			n--;
 		}
 		else
 		{
-			insertA(p, l.remove(q));
+			q = q->succ;
+			insertB(p, l.remove(q->pred));
 			m--;
 		}
 	}
+
+	p = predP->succ;
 }
 
 template<typename T>
