@@ -18,9 +18,21 @@
     <ClInclude Include="..\..\include\Chapter04\Stack.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\Chapter04\Queen.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Chapter04\Migong.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Chapter04\Queue.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\Chapter04\main.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Chapter04\Migong.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

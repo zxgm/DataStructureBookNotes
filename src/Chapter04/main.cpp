@@ -1,29 +1,23 @@
 #include <stdio.h>
-#include "../../include/Chapter04/Stack.h"
-
-#define N_OPTR 9
-typedef enum {ADD,	SUB, MUL,DIV,POW,FAC,L_P,R_P,EOE} Operator;
-const char pri[N_OPTR][N_OPTR] = {
-	    // +    -    *    /    ^    !    (    )   \0
-	/*+*/ '>', '>', '<', '<', '<', '<', '<', '>', '>',
-/*-*/
-/***/
-/*/*/
-/*^*/
-/*!*/
-/*(*/
-/*)*/
-/*\0*/
-};
+//#include "../../include/Chapter04/Queen.h"
+#include "Chapter04/Migong.h"
 
 int main(int argc, char *argv[])
 {
-	Stack<char> s;
+	Cell laby[LABY_MAX][LABY_MAX] = { {}, {} };
+	Cell *startCell = laby[0];
+	Cell *endCell = laby[0] + LABY_MAX;
+	labyrinth(laby, startCell, endCell);
+
+	//placeQueen(8);
+
+	// binary convert
+	/*Stack<char> s;
 	convert(s, 178, 16);
 
 	int size = s.size();
 	while (size--)
-		printf("%c", s.pop());
+		printf("%c", s.pop());*/
 
 	getchar();
 	return 0;
