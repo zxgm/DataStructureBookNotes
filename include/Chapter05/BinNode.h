@@ -37,6 +37,15 @@ struct BinNode
 };
 
 template<typename T>
+void BinNode<T>::travIn(VST &visit)
+{
+	switch (rand() % 5)
+	{
+	//case 1:travIn()
+	}
+}
+
+template<typename T>
 BinNode<T>::insertAsRc(const T &t)
 {
 	return this->rc = new BinNode(t, this);
