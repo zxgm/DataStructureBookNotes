@@ -57,6 +57,41 @@ BinNode<T>::insertAsLc(const T &t)
 	return lc = new BinNode(t, this);
 }
 
+template<typename T> BinNodePos(T) BinNode<T>::succ()
+{
+	BinNodePos(T) p = this;
+	if (rc)
+	{
+		p = rc;
+		while (HasLChild(*p))
+			p = p->lc;
+	}
+	else
+	{
+		while (IsRChild(*p))
+			p = p->parent;
+		p = p->parent
+	}
+
+	return p;
+}
+
+template<typename T,typename VST>
+void BinNode<T>::travLevel(VST &visit)
+{
+	Queue<BinNodePos(T)> q;
+	q.enqueue(this);
+	while (!q.empty())
+	{
+		BinNodePos(T) x = q.dequeue();
+		visit(x->data);
+		if (HasLChild(*x))
+			q.enqueue(x->lc);
+		if (HasRChild(*x))
+			q.enqueue(x->rc);
+	}
+}
+
 #define IsRoot(x) (!((x).parent))
 #define IsLChild(x) (!IsRoot(x) && (&(x)==(x).parent->lc))
 #define IsRChild(x) (!IsRoot(x) && (&(x)==(x).parent->rc))
