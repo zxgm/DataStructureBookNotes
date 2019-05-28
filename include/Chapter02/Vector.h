@@ -1,3 +1,6 @@
+#ifndef _VECTOR_H
+#define _VECTOR_H
+
 #include <stdint.h>
 #include <assert.h>
 
@@ -137,10 +140,10 @@ void Vector<T>::sort(Rank lo, Rank hi)
 	switch (rand()%5)
 	{
 	case 1:bubbleSort(lo, hi);break;
-	case 2:selectionSort(lo, hi);break;
+	//case 2:selectionSort(lo, hi);break;
 	case 3:mergeSort(lo, hi);break;
-	case 4:heapSort(lo, hi); break;
-	default:quickSort(lo, hi);break;
+	//case 4:heapSort(lo, hi); break;
+	//default:quickSort(lo, hi);break;
 	}
 }
 
@@ -329,7 +332,7 @@ void Vector<T>::unsort(Rank lo, Rank hi)
 template<typename T>
 T& Vector<T>::operator[](Rank r) const
 {
-	assert(0 <= r < _size);
+	assert(r >= 0 && r < _size);
 	return _elem[r];
 }
 
@@ -390,3 +393,5 @@ void Vector<T>::copyFrom(T const *A, Rank lo, Rank hi)
 	while (lo < hi)
 		_elem[_size++] = A[lo++];
 }
+
+#endif
