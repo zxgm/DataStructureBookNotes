@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\Chapter02\FibUtil.h" />
+    <ClInclude Include="..\..\include\Chapter02\MyVector.h" />
     <ClInclude Include="..\..\include\Chapter02\Vector.h" />
   </ItemGroup>
   <ItemGroup>

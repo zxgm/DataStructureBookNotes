@@ -22,6 +22,12 @@ private:
 		}
 	}
 
+	void BFS(int, int&);
+	void DFS(int, int&);
+	void BCC(int, int&, Stack<int>&);
+	bool TSort(int, int&, Stack<Tv>*);
+	template<typename PU> void PFS(int, PU);
+
 public:
 	int n;
 	virtual int insert(const Tv &) = 0;
@@ -48,8 +54,192 @@ public:
 	void bfs(int);
 	void dfs(int);
 	void bcc(int);
-	//Stack<Tv>* tSort(int);
+	Stack<Tv>* tSort(int);
 	void prim(int);
 	void dijkstra(int);
 	template<typename PU> void pfs(int, PU);
 };
+
+template<typename Tv,typename Te>
+void Graph<Tv, Te>::bfs(int s)
+{
+	reset();
+	int clock = 0, v = s;
+	do
+	{
+		if (UNDISCOVERED == status(v))
+			BFS(v, clock);
+	} while (s != (v = (++v%n)));
+}
+
+template<typename Tv,typename Te>
+void Graph<Tv, Te>::BFS(int v, int &clock)
+{
+	Queue<int> Q;
+	status(v) = DISCOVERED;
+	Q.enqueue(v);
+	while (!Q.empty())
+	{
+		int v = Q.dequeue();
+		dTime(v) = ++clock;
+		for (int u = firstNbr(v); u > -1; u = nextNbr(v, u))
+		{
+			if (status(u) == UNDISCOVERED)
+			{
+				status(u) = DISCOVERED;
+				Q.enqueue(u);
+				type(v, u) = TREE;
+				parent(u) = v;
+			}
+			else
+			{
+				type(u, v) = CROSS;
+			}
+		}
+
+		status(v) = VISITED;
+	}
+}
+
+template<typename Tv,typename Te>
+void Graph<Tv, Te>::dfs(int s)
+{
+	reset();
+	int clock = 0, v = s;
+	do{
+		if (status(v) == UNDISCOVERED)
+			DFS(v, clock);
+	} while (s!=(v=(++v%n)));
+}
+
+template<typename Tv,typename Te>
+void Graph<Tv, Te>::DFS(int v, int &clock)
+{
+	dTime(v) = ++clock;
+	status(v) = DISCOVERED;
+	for (int u = firstNbr(v); u > -1; u = nextNbr(v, u))
+	{
+		switch (status(u))
+		{
+		case UNDISCOVERED:
+			type(v, u) = CROSS;
+			parent(u) = v;
+			DFS(u, clock);
+			break;
+		case DISCOVERED:
+			type(v, u) = BACKWARD;
+			break;
+		default:
+			type(v, u) = (dTime(v)<dTime(u))?FORWARD:CROSS;
+			break;
+		}
+	}
+
+	status(v) = VISITED;
+	fTime(v) = ++clock;
+}
+
+template<typename Tv,typename Te>
+Stack<Tv>* Graph<Tv, Te>::tSort(int s)
+{
+	reset();
+	int clock = 0, v = s;
+	Stack<Tv>* S = new Stack<Tv>;
+	do 
+	{
+		if (status(v) == UNDISCOVERED)
+		{
+			if (!TSort(v, clock, S))
+			{
+				while (!S->empty())
+					S->pop();
+				break;
+			}
+		}
+	} while (s!=(v=(++v%n)));
+
+	return S;
+}
+
+template<typename Tv,typename Te>
+bool Graph<Tv, Te>::TSort(int v, int &clock, Stack<Tv> *S)
+{
+	dTime(v) = ++clock;
+	status(v) = DISCOVERED;
+	for (int u = firstNbr(v); u > -1; u = nextNbr(v, u))
+	{
+		switch (status(u))
+		{
+		case UNDISCOVERED:
+			parent(u) = v;
+			type(v, u) = TREE;
+			if (!TSort(u, clock, S))
+				return false;
+			break;
+		case DISCOVERED:
+			type(v, u) = BACKWARD;
+			return false;
+		default:
+			type(v, u) = (dTime(v)<dTime(u)) ? FORWARD : CROSS;
+			break;
+		}
+	}
+
+	status(v) = VISITED;
+	S->push(vertex(v));
+	return true;
+}
+
+template<typename Tv,typename Te>
+void Graph<Tv, Te>::bcc(int s)
+{
+	reset();
+	int clock = 0, v = s;
+	Stack<int> S;
+	do 
+	{
+		if (UNDISCOVERED == status(v))
+		{
+			BCC(v, clock, S);
+			S.pop();
+		}
+	} while (s != (v=(++v%n)));
+}
+
+#define hca(x) (fTime(x))
+template<typename Tv,typename Te>
+void Graph<Tv, Te>::BCC(int v, int &clock, Stack<int> &S)
+{
+	hca(v) = dTime(v) = ++clock;
+	status(v) = DISCOVERED;
+	S.push(v);
+	for (int u = firstNbr(v); u > -1; u = nextNbr(v, u))
+	{
+		switch (status(u))
+		{
+		case UNDISCOVERED:
+			parent(u) = v;
+			type(v, u) = TREE;
+			BCC(u, clock, S);
+			if (hca(u) < dTime(v))
+				hca(v) = min(hca(v), hca(u));
+			else
+			{
+				while (v != S.pop())
+					S.push(v);
+			}
+			break;
+		case DISCOVERED:
+			type(v, u) = BACKWARD;
+			if (u != parent(v))
+				hca(v) = min(hca(v), dTime(u));
+			break;
+		default:
+			type(v, u) = (dTime(v) < dTime(u)) ? FORWARD : CROSS;
+			break;
+		}
+	}
+	status(v) = VISITED;
+}
+
+#undef hca

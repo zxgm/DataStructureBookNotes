@@ -130,8 +130,14 @@ int32_t fib(int32_t n)
 	//return g;
 }
 
+//#include <unordered_map>
+
 int main(int argc, char *argv[])
 {
+#if defined(A)
+	unordered_map<int,int> unmap;
+#endif
+
 	int32_t arr[] = {3,4,3,1,9,7};
 	bubble_sort(arr, 6);
 

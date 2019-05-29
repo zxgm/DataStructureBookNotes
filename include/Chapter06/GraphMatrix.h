@@ -1,5 +1,5 @@
-#include "Chapter02/Vector.h"
-//#include "Chapter04/Stack.h"
+#include "Chapter02/MyVector.h"
+#include "Chapter04/Stack.h"
 #include "Graph.h"
 
 #include <limits.h>
@@ -32,8 +32,8 @@ template<typename Tv,typename Te>
 class GraphMatrix :public Graph<Tv, Te>
 {
 private:
-	Vector<Vertex<Tv> > V;
-	Vector<Vector<Edge<Te> *> > E;
+	MyVector<Vertex<Tv> > V;
+	MyVector<MyVector<Edge<Te> *> > E;
 
 public:
 	GraphMatrix(){ n = e = 0; }
@@ -50,6 +50,7 @@ public:
 	virtual int inDegree(int i) { return V[i].inDegree; }
 	virtual int outDegree(int i) { return V[i].outDegree; }
 	virtual int firstNbr(int i){ return nextNbr(i, n); }
+
 	virtual int nextNbr(int i, int j)
 	{
 		while (-1 < j && !exists(i, --j));
@@ -60,14 +61,17 @@ public:
 	virtual int& fTime(int i) { return V[i].fTime; }
 	virtual int& parent(int i) { return V[i].parent; }
 	virtual int& priority(int i) { return V[i].priority; }
+
 	virtual int insert(const Tv& vertex)
 	{
 		for (int j = 0; j < n; j++)
 			E[j].insert(NULL);
+			
 		n++;
-		E.insert(Vector<Edge<Te>*>(n, n, (Edge<Te>*)NULL));
-		return V.insert(Vertex<Tv>(vertex));
+		E.insert(MyVector<Edge<Te>*>(n, n, (Edge<Te>*)NULL));
+ 		return V.insert(Vertex<Tv>(vertex));
 	}
+
 	virtual Tv remove(int i)
 	{
 		for (int j = 0; j < n; j++)

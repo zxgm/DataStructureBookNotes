@@ -1,5 +1,5 @@
-#ifndef _VECTOR_H
-#define _VECTOR_H
+#ifndef _MYVector_H
+#define _MYVECTOR_H
 
 #include <stdint.h>
 #include <assert.h>
@@ -7,12 +7,12 @@
 typedef int32_t Rank;
 #define DEFAULT_CAPACITY 3
 
-template<typename T> class Vector
+template<typename T> class MyVector
 {
 protected:
-	Rank _size;				// Vector实际大小
-	int32_t _capacity;		// Vector容量
-	T *_elem;				// Vector存储元素的首地址
+	Rank _size;				// MyVector实际大小
+	int32_t _capacity;		// MyVector容量
+	T *_elem;				// MyVector存储元素的首地址
 
 	void copyFrom(T const *A, Rank lo, Rank hi);
 	void expand();
@@ -28,20 +28,21 @@ protected:
 	void heapSort(Rank lo, Rank hi);
 
 public:
-	Vector(int32_t c = DEFAULT_CAPACITY, int32_t s = 0, T v = 0)
+	MyVector(int32_t c = DEFAULT_CAPACITY, int32_t s = 0, T v = 0)
 	{
+		MyVector* self = this;
 		_elem = new T[_capacity=c];
 		for (_size = 0; _size < s; _elem[_size++] = v);
 	}
-	Vector(T const *A, Rank n){ copyFrom(A, 0, n); }
-	Vector(T const *A, Rank lo, Rank hi){ copyFrom(A, lo, hi); }
-	Vector(Vector<T> const &v){copyFrom(v._elem, 0, v._size); }
-	Vector(Vector<T> const &v, Rank lo, Rank hi){ copyFrom(v._elem, lo, hi); }
+	MyVector(T const *A, Rank n){ copyFrom(A, 0, n); }
+	MyVector(T const *A, Rank lo, Rank hi){ copyFrom(A, lo, hi); }
+	MyVector(MyVector<T> const &v){copyFrom(v._elem, 0, v._size); }
+	MyVector(MyVector<T> const &v, Rank lo, Rank hi){ copyFrom(v._elem, lo, hi); }
 
-	~Vector(){ delete[] _elem; _elem = NULL; }
+	~MyVector(){ delete[] _elem; _elem = NULL; }
 
-	Rank size(){ return _size; }
-	bool empty(){ return !_size; }
+	Rank size() const { return _size; }
+	bool empty() const { return !_size; }
 	int disordered() const;
 	Rank find(T const &e) const{ return find(e, 0, _size); }
 
@@ -55,7 +56,7 @@ public:
 	Rank search(T const &e, Rank lo, Rank hi) const;
 
 	T& operator[](Rank r) const;
-	Vector<T>& operator=(Vector<T> const&);
+	MyVector<T>& operator=(MyVector<T> const&);
 	T remove(Rank r);
 	int32_t remove(Rank lo, Rank hi);
 	Rank insert(Rank r, T const& e);
@@ -75,7 +76,7 @@ public:
 };
 
 template<typename T>
-void Vector<T>::merge(Rank lo, Rank mid, Rank hi)
+void MyVector<T>::merge(Rank lo, Rank mid, Rank hi)
 {
 	T *a = _elem + lo;
 	Rank l = mid - lo;
@@ -99,7 +100,7 @@ void Vector<T>::merge(Rank lo, Rank mid, Rank hi)
 }
 
 template<typename T>
-void Vector<T>::mergeSort(Rank lo, Rank hi)
+void MyVector<T>::mergeSort(Rank lo, Rank hi)
 {
 	if (hi-lo < 2) return;
 	int32_t mid = (hi+lo) >> 1;
@@ -110,7 +111,7 @@ void Vector<T>::mergeSort(Rank lo, Rank hi)
 
 // 一趟扫描，排最大值
 template<typename T>
-bool Vector<T>::bubble(Rank lo, Rank hi)
+bool MyVector<T>::bubble(Rank lo, Rank hi)
 {
 	bool isSort = true;
 	while (++lo < hi)
@@ -129,13 +130,13 @@ bool Vector<T>::bubble(Rank lo, Rank hi)
 }
 
 template<typename T>
-void Vector<T>::bubbleSort(Rank lo, Rank hi)
+void MyVector<T>::bubbleSort(Rank lo, Rank hi)
 {
 	while (!bubble(lo,hi--));// 全部扫描
 }
 
 template<typename T>
-void Vector<T>::sort(Rank lo, Rank hi)
+void MyVector<T>::sort(Rank lo, Rank hi)
 {
 	switch (rand()%5)
 	{
@@ -148,7 +149,7 @@ void Vector<T>::sort(Rank lo, Rank hi)
 }
 
 template<typename T>
-Rank Vector<T>::search(T const &e, Rank lo, Rank hi) const
+Rank MyVector<T>::search(T const &e, Rank lo, Rank hi) const
 {
 	// 三分支版本的二分查找
 	/*int32_t med = 0;
@@ -206,14 +207,14 @@ Rank Vector<T>::search(T const &e, Rank lo, Rank hi) const
 }
 
 template<typename T> template<typename VST>
-void Vector<T>::traverse(VST &vst)
+void MyVector<T>::traverse(VST &vst)
 {
 	for (int32_t index = 0; index < _size; ++index)
 		vst(_elem[index]);
 }
 
 template<typename T>
-int32_t Vector<T>::uniquify()
+int32_t MyVector<T>::uniquify()
 {
 	int32_t pos = 1, oldSize = _size;
 	for (int32_t index = 1; index < _size; ++index)
@@ -229,7 +230,7 @@ int32_t Vector<T>::uniquify()
 }
 
 template<typename T>
-int Vector<T>::disordered() const
+int MyVector<T>::disordered() const
 {
 	int32_t n = 0;
 	for (int32_t index = 1; index < _size; ++index)
@@ -240,14 +241,14 @@ int Vector<T>::disordered() const
 }
 
 template<typename T>
-void Vector<T>::traverse(void(*fun)(T &))
+void MyVector<T>::traverse(void(*fun)(T &))
 {
 	for (int32_t index = 0; index < _size; ++index)
 		fun(_elem[index]);
 }
 
 template<typename T>
-int32_t Vector<T>::deduplicate()
+int32_t MyVector<T>::deduplicate()
 {
 	int32_t pos = 1;
 	for (int32_t index = 1; index < _size; ++index)
@@ -264,7 +265,7 @@ int32_t Vector<T>::deduplicate()
 }
 
 template<typename T>
-int32_t Vector<T>::remove(Rank lo, Rank hi)
+int32_t MyVector<T>::remove(Rank lo, Rank hi)
 {
 	if (lo == hi) return 0;
 	while (hi < _size)
@@ -275,7 +276,7 @@ int32_t Vector<T>::remove(Rank lo, Rank hi)
 }
 
 template<typename T>
-T Vector<T>::remove(Rank r)
+T MyVector<T>::remove(Rank r)
 {
 	T t = _elem[r];
 	remove(r, r+1);
@@ -283,7 +284,7 @@ T Vector<T>::remove(Rank r)
 }
 
 template<typename T>
-void permute(Vector<T> &v);
+void permute(MyVector<T> &v);
 
 template<typename T>
 bool lt(T *a, T *b){ lt(*a,*b); }
@@ -295,14 +296,14 @@ template<typename T>
 bool eq(T &a, T &b){ return a == b; }
 
 template<typename T>
-void permute(Vector<T> &v)
+void permute(MyVector<T> &v)
 {
 	for (int32_t i = size(); i>0; i--)
 		swap(v[i-1], v[rand()%i]);
 }
 
 template<typename T>
-Rank Vector<T>::insert(Rank r, T const& e)
+Rank MyVector<T>::insert(Rank r, T const& e)
 {
 	expand();
 	int32_t i = _size;
@@ -315,14 +316,14 @@ Rank Vector<T>::insert(Rank r, T const& e)
 }
 
 template<typename T>
-Rank Vector<T>::find(T const &e, Rank lo, Rank hi) const
+Rank MyVector<T>::find(T const &e, Rank lo, Rank hi) const
 {
 	while ((lo < hi--) && (e != _elem[hi]));
 	return hi;
 }
 
 template<typename T>
-void Vector<T>::unsort(Rank lo, Rank hi)
+void MyVector<T>::unsort(Rank lo, Rank hi)
 {
 	assert(hi >= lo);
 	for (int32_t i = hi; i > lo; i--)
@@ -330,14 +331,14 @@ void Vector<T>::unsort(Rank lo, Rank hi)
 }
 
 template<typename T>
-T& Vector<T>::operator[](Rank r) const
+T& MyVector<T>::operator[](Rank r) const
 {
 	assert(r >= 0 && r < _size);
 	return _elem[r];
 }
 
 template<typename T>
-void Vector<T>::shrink()
+void MyVector<T>::shrink()
 {
 	if (_capacity <= 4*_size)
 		return;
@@ -353,7 +354,7 @@ void Vector<T>::shrink()
 }
 
 template<typename T>
-void Vector<T>::expand()
+void MyVector<T>::expand()
 {
 	if (_size < _capacity)
 		return;
@@ -369,7 +370,7 @@ void Vector<T>::expand()
 }
 
 template<typename T>
-Vector<T>& Vector<T>::operator=(const Vector<T> &v)
+MyVector<T>& MyVector<T>::operator=(const MyVector<T> &v)
 {
 	if (this == &v)
 		return *this;
@@ -386,7 +387,7 @@ Vector<T>& Vector<T>::operator=(const Vector<T> &v)
 }
 
 template<typename T>
-void Vector<T>::copyFrom(T const *A, Rank lo, Rank hi)
+void MyVector<T>::copyFrom(const T *A, Rank lo, Rank hi)
 {
 	_elem = new T[_capacity = (hi-lo) << 1];
 	_size = 0;
