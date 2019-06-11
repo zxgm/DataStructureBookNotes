@@ -45,4 +45,22 @@ template<typename T> BinNodePos(T) AVL<T>::insert(const T &e)
 
 	return xx;
 }
+
+template<typename T> bool AVL<T>::remove(const T &e)
+{
+	BinNodePos(T) &x = search(e);
+	if (!x)
+		return false;
+	removeAt(x, _hot);
+	_size--;
+	for (BinNodePos(T) g = _hot; g; g = g->parent)
+	{
+		if (!AvlBalanced(*g))
+		{
+			g = FromParentTo(*g) = rotateAt(tallerChild(tallerChild(g)));
+		}
+		updateHeight(g);
+	}
+	return true;
+}
 #endif
