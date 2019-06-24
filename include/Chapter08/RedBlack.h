@@ -12,6 +12,62 @@ public:
 };
 
 template<typename T>
+void RedBlack<T>::solveDoubleBlack(BinNodePos(T) r)
+{
+	BinNodePos(T) p = r ? r->parent : _hot;
+	if (!p)
+		return;
+
+	BinNodePos(T) s = (r==p->lc)?p->rc:p->lc;
+	if (IsBlack(s))
+	{
+		BinNodePos(T) t = NULL;
+		if (IsRed(s->rc))
+			t = s->rc;
+		if (IsRed(s->lc))
+			t = s->lc;
+		if (t)
+		{
+			RBColor oldColor = p->color;
+			BinNodePos(T) b = FromParentTo(*p) = rotateAt(t);
+			if (HasLChild(*b))
+			{
+				b->lc->color = RB_BLACK;
+				updateHeight(b->lc);
+			}
+			if (HasRChild(*b))
+			{
+				b->rc->color = RB_BLACK;
+				updateHeight(b->rc);
+			}
+			b->color = oldColor;
+			updateHeight(b);
+		}
+		else
+		{
+			s->color = RB_RED;
+			s->height--;
+			if (IsRed(p))
+				p->color = RB_BLACK;
+			else
+			{
+				p->height--;
+				solveDoubleBlack(p);
+			}
+		}
+	}
+	else
+	{
+		s->color = RB_BLACK;
+		p->color = RB_RED;
+		BinNodePos(T) t = IsLChild(*s) ? s->lc : s->rc;
+		_hot = p;
+		FromParentTo(*p) = rotateAt(t);
+		solveDoubleBlack(r);
+	}
+}
+
+template<typename T>
 void RedBlack<T>::solveDoubleRed(BinNodePos(T) x)
 {
 	if (IsRoot(*x))
